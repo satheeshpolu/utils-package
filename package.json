@@ -1,0 +1,22 @@
+{
+  "name": "@satheeshpolu/utils-package",
+  "version": "1.0.1",
+  "description": "It has reusable code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/satheeshpolu/utils-package.git"
+  },
+  "keywords": [
+    "utils"
+  ],
+  "author": "satheesh polu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/satheeshpolu/utils-package/issues"
+  },
+  "homepage": "https://github.com/satheeshpolu/utils-package#readme"
+}
