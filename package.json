@@ -4,7 +4,8 @@
   "description": "It has reusable code",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js",
+    "update-package": "node updateVersion"
   },
   "repository": {
     "type": "git",
