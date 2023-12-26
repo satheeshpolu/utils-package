@@ -9,7 +9,7 @@ fs.readFile(path, "utf8", (err, data) => {
   } else {
     const packageData = JSON.parse(data);
     console.log("Current version: ", packageData.version);
-    const newVersion = "1.1.3"; //Update the version here
+    const newVersion = "1.1.4"; //Update the version here
     packageData.version = newVersion;
     // Convert the modified object back to a JSON string
     const updatedData = JSON.stringify(packageData, null, 2);
