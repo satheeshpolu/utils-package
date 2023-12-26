@@ -1,25 +1,5 @@
-const fs = require('fs').promises; // Use fs.promises for asynchronous file operations
-const { execSync } = require('child_process');
-
-// Step-1: Check if the project root directory is provided
-const projectDirectoryPath = process.argv[2];
-
-if (!projectDirectoryPath) {
-  console.log('Please provide the project root directory');
-  console.log('Usage: npm run add-i18n <project-root-directory>');
-  process.exit(1);
-}
-
-console.log('Error in Project Directory => ', projectDirectoryPath);
-
-// Step-2: Install i18next dependencies
-try {
-  execSync(`cd ${projectDirectoryPath} && npm install i18next react-i18next`);
-  console.log('i18next dependencies installed successfully.');
-} catch (error) {
-  console.error('Error installing dependencies:', error.stdout.toString());
-  process.exit(1);
-}
+const fs = require("fs").promises; // Use fs.promises for asynchronous file operations
+const { execSync } = require("child_process");
 
 // File content for i18n.ts
 const fileContent = `
@@ -60,22 +40,44 @@ i18n.use(initReactI18next).init({
 export default i18n;
 `;
 
+// Step-1: Get the project root directory
+const projectDirectoryPath = process.cwd();
+
 // Directory for translation files
 const translationsDirectory = `${projectDirectoryPath}/src/utilities/translations`;
 
+// Step-2: Install i18next dependencies
+const preInstallDependencies = async () => {
+  try {
+    execSync(`cd ${projectDirectoryPath} && npm install i18next react-i18next`);
+    console.log(
+      "i18next and react-i18next dependencies installed successfully.\n"
+    );
+  } catch (error) {
+    console.error("\nError installing dependencies:", error.stdout.toString());
+    process.exit(1);
+  }
+};
+
 // Function to create directories for supported countries
 const createDirForSupportedCountries = async () => {
-  const i18nSupportedCountries = ['de', 'fr', 'en'];
+  const i18nSupportedCountries = ["de", "fr", "en"];
 
   for (const countryCode of i18nSupportedCountries) {
     const path = `${translationsDirectory}/${countryCode}`;
 
     try {
       await fs.mkdir(path, { recursive: true });
-      await fs.writeFile(`${path}/index.ts`, '"Please import translation files here...!"');
+      await fs.writeFile(
+        `${path}/index.ts`,
+        '"Please import translation files here...!"'
+      );
       console.log(`A new ${path}/index.ts file is created.`);
     } catch (err) {
-      console.error(`Error creating directory or file for ${countryCode}:`, err);
+      console.error(
+        `Error creating directory or file for ${countryCode}:`,
+        err
+      );
     }
   }
 };
@@ -83,10 +85,14 @@ const createDirForSupportedCountries = async () => {
 // Step-3: Check if the project root directory has src/utilities
 (async () => {
   try {
+    await preInstallDependencies();
     await createDirForSupportedCountries();
 
     // Check if utilities directory exists
-    const utilitiesExist = await fs.access(translationsDirectory).then(() => true).catch(() => false);
+    const utilitiesExist = await fs
+      .access(translationsDirectory)
+      .then(() => true)
+      .catch(() => false);
 
     if (!utilitiesExist) {
       await fs.mkdir(translationsDirectory, { recursive: true });
@@ -94,9 +100,9 @@ const createDirForSupportedCountries = async () => {
 
     // Write i18n.ts file
     await fs.writeFile(`${translationsDirectory}/i18n.ts`, fileContent);
-    console.log('i18n script added into i18n.ts file.');
-    console.log('File(i18n.ts) written successfully.');
+    // console.log('i18n script added into i18n.ts file.');
+    console.log("\ni18n setup is done and i18n.ts file created successfully.");
   } catch (error) {
-    console.error('Error while writing into File(i18n.ts)', error);
+    console.error("Error while writing into File(i18n.ts)", error);
   }
 })();
