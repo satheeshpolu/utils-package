@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "update-package": "node updateVersion",
-    "add-i18n": "node add-i18n",
-    "postinstall": "npm run add-i18n"
+    "update-package": "node updateVersion"
   },
   "repository": {
     "type": "git",
