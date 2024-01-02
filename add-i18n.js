@@ -51,10 +51,10 @@ const preInstallDependencies = async () => {
   try {
     execSync(`cd ${projectDirectoryPath} && npm install i18next react-i18next`);
     console.log(
-      "i18next and react-i18next dependencies installed successfully.\n"
+      "✅ i18next and react-i18next dependencies installed successfully.\n"
     );
   } catch (error) {
-    console.error("\nError installing dependencies:", error.stdout.toString());
+    console.error("\n❌ Error installing dependencies:", error.stdout.toString());
     process.exit(1);
   }
 };
@@ -65,17 +65,17 @@ const createDirForSupportedCountries = async () => {
 
   for (const countryCode of i18nSupportedCountries) {
     const path = `${translationsDirectory}/${countryCode}`;
-
+    //console.log(`⏳ A new ${path}/index.ts file is created.`);
+    console.log(`⏳ Files are currently being generated.`);
     try {
       await fs.mkdir(path, { recursive: true });
       await fs.writeFile(
         `${path}/index.ts`,
         '"Please import translation files here...!"'
       );
-      console.log(`A new ${path}/index.ts file is created.`);
     } catch (err) {
       console.error(
-        `Error creating directory or file for ${countryCode}:`,
+        `❌ Error creating directory or file for ${countryCode}:`,
         err
       );
     }
@@ -101,8 +101,8 @@ const createDirForSupportedCountries = async () => {
     // Write i18n.ts file
     await fs.writeFile(`${translationsDirectory}/i18n.ts`, fileContent);
     // console.log('i18n script added into i18n.ts file.');
-    console.log("\ni18n setup is done and i18n.ts file created successfully.");
+    console.log("\n✅ i18n setup is done and i18n.ts file created successfully. 🚀");
   } catch (error) {
-    console.error("Error while writing into File(i18n.ts)", error);
+    console.error("❌ Error while writing into File(i18n.ts)", error);
   }
 })();
