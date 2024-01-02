@@ -66,7 +66,6 @@ const createDirForSupportedCountries = async () => {
   for (const countryCode of i18nSupportedCountries) {
     const path = `${translationsDirectory}/${countryCode}`;
     //console.log(`⏳ A new ${path}/index.ts file is created.`);
-    console.log(`⏳ Files are currently being generated.`);
     try {
       await fs.mkdir(path, { recursive: true });
       await fs.writeFile(
@@ -80,6 +79,7 @@ const createDirForSupportedCountries = async () => {
       );
     }
   }
+  console.log(`⏳ Files are currently being generated.`);
 };
 
 // Step-3: Check if the project root directory has src/utilities
