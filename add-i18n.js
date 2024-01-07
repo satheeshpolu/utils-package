@@ -1,6 +1,6 @@
 const fs = require("fs").promises; // Use fs.promises for asynchronous file operations
 const { execSync } = require("child_process");
-const { fileContent, i18nSupportedCountries  } = require("./src/i18n-support/i18n-script-util");
+const i18nUtils = require("./src/i18n-support/i18n-util.js");
 
 // Step-1: Get the project root directory
 const projectDirectoryPath = process.cwd();
@@ -33,7 +33,7 @@ const addDefaultTranslationsByCountry = (countryCode) => {
 // Function to create directories for supported countries
 const createDirForSupportedCountries = async () => {
 
-  for (const countryCode of i18nSupportedCountries) {
+  for (const countryCode of i18nUtils.i18nSupportedCountries) {
     const path = `${translationsDirectory}/${countryCode}`;
     //console.log(`⏳ A new ${path}/index.ts file is created.`);
     try {
@@ -77,7 +77,7 @@ const createDirForSupportedCountries = async () => {
     }
 
     // Write i18n.ts file
-    await fs.writeFile(`${translationsDirectory}/i18n.ts`, fileContent);
+    await fs.writeFile(`${translationsDirectory}/i18n.ts`, i18nUtils.fileContent);
     // console.log('i18n script added into i18n.ts file.');
     console.log("\n✅ i18n setup is done and i18n.ts file created successfully. 🚀");
   } catch (error) {
