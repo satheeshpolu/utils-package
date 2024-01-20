@@ -3,46 +3,44 @@ const { execSync } = require("child_process");
 
 // Step-1: Get the project root directory
 const projectDirectoryPath = process.cwd();
+const i18nSupportedCountries = ["de", "fr", "en"];
 
 const fileContent = `
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { NativeModules, Platform } from 'react-native';
-import de from './de';
-import en from './en';
-import fr from './fr';
+import { Platform, NativeModules } from 'react-native';
 
-const supportedLngs = ['de', 'en', 'fr'];
 const resources = {
-  de: de,
-  en: en,
-  fr: fr,
+  de: { translation: require('./de/screens/home.json') },
+  en: { translation: require('./en/screens/home.json') },
+  fr: { translation: require('./fr/screens/home.json') },
 };
-
-const getLanguage = () => {
-  const locale =
+const getDdeviceLanguage = () => {
+  const deviceLanguage =
     Platform.OS === 'ios'
-      ? NativeModules.SettingsManager.settings.AppleLocale
+      ? NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0]
       : NativeModules.I18nManager.localeIdentifier;
-  return locale.substring(0, 2);
+  return deviceLanguage.split(0, 2);
 };
 
 i18n.use(initReactI18next).init({
-  debug: true,
+  resources: resources,
+  lng: getDdeviceLanguage(),
   fallbackLng: 'de',
-  lng: getLanguage(),
+  debug: true,
+  supportedLngs: ["de", "fr", "en"],
+  compatibilityJSON: 'v3',
   interpolation: {
     escapeValue: false,
   },
-  supportedLngs: supportedLngs,
-  compatibilityJSON: 'v3',
-  resources: resources,
 });
 
 export default i18n;
+
 `;
 
-const i18nSupportedCountries = ["de", "fr", "en"];
+// const i18nSupportedCountries = ["de", "fr", "en"];
 
 // Directory for translation files
 const translationsDirectory = `${projectDirectoryPath}/src/utilities/translations`;
@@ -52,26 +50,37 @@ const preInstallDependencies = async () => {
   try {
     execSync(`cd ${projectDirectoryPath} && npm install i18next react-i18next`);
   } catch (error) {
-    console.error("\n❌ Error installing dependencies:", error.stdout.toString());
+    console.error(
+      "\n❌ Error installing dependencies:",
+      error.stdout.toString()
+    );
     process.exit(1);
   }
 };
 
 const addImportScriptsByCountry = (countryCode) => {
-  const script = `import homeScreen from "../${countryCode}/screens/home";
-  
+  //old
+  //const script = `import homeScreen from "../${countryCode}/screens/home";
+
+  //New
+  const script = `import homeScreen from "../../screens/home";
+  // Please modify the above import path correctly
   export default {homeScreen, };`;
   return script;
 };
 
 const addDefaultTranslationsByCountry = (countryCode) => {
-  const script = `export default { title: "${countryCode} Home Title", };`;
+  // old
+  // const script = `export default { title: "${countryCode} Home Title", };`;
+
+  //New
+  const script = `{ "login-app": "Connexion" }`;
   return script;
 };
 
 // Function to create directories for supported countries
 const createDirForSupportedCountries = async () => {
-
+  
   for (const countryCode of i18nSupportedCountries) {
     const path = `${translationsDirectory}/${countryCode}`;
     //console.log(`⏳ A new ${path}/index.ts file is created.`);
@@ -82,8 +91,16 @@ const createDirForSupportedCountries = async () => {
         addImportScriptsByCountry(countryCode)
       );
       await fs.mkdir(path + "/screens", { recursive: true });
+
+      //Old
+      // await fs.writeFile(
+      //   `${path}/screens/home.ts`,
+      //   addDefaultTranslationsByCountry(countryCode)
+      // );
+
+      // New
       await fs.writeFile(
-        `${path}/screens/home.ts`,
+        `${path}/screens/home.json`,
         addDefaultTranslationsByCountry(countryCode)
       );
     } catch (err) {
@@ -116,9 +133,16 @@ const createDirForSupportedCountries = async () => {
     }
 
     // Write i18n.ts file
-    await fs.writeFile(`${translationsDirectory}/i18n.ts`, fileContent);
+    // Old
+    //await fs.writeFile(`${translationsDirectory}/i18n.ts`, fileContent);
+
+    //New
+    await fs.writeFile(`${translationsDirectory}/i18n.js`, fileContent);
+
     // console.log('i18n script added into i18n.ts file.');
-    console.log("\n✅ i18n setup is done and i18n.ts file created successfully. 🚀");
+    console.log(
+      "\n✅ i18n setup is done and i18n.ts file created successfully. 🚀"
+    );
   } catch (error) {
     console.error("❌ Error while writing into File(i18n.ts)", error);
   }
