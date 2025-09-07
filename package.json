@@ -4,7 +4,7 @@
   "description": "It has reusable code",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js",
+    "test": "jest",
     "update-version": "node updateVersion",
     "add-i18n": "node add-i18n.js"
   },
@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/satheeshpolu/utils-package/issues"
   },
-  "homepage": "https://github.com/satheeshpolu/utils-package#readme"
+  "homepage": "https://github.com/satheeshpolu/utils-package#readme",
+  "devDependencies": {
+    "jest": "^30.1.3"
+  }
 }
